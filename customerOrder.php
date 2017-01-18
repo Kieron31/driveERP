@@ -45,7 +45,7 @@ $orderID = $_POST['orderID'];
                     },
                     dataType: 'json',
                     success: function (data)
-                    {
+                    {F
                         outputData = outputData + "<table>";
                         for (i = 0; i < data.prodResults.length; i++) { //creates a table with the suggested products
                             outputData = outputData + "<tr> <td onclick='completeCustomer(\"" + data.prodResults[i].ProductDescLong + "\" , \"" + data.prodResults[i].ProductID + "\")' >" + data.prodResults[i].ProductDescLong + "</td> </tr>";
@@ -109,7 +109,7 @@ $orderID = $_POST['orderID'];
                         'productID': productIDG,
                         'quantity': quantity,
                         'totalCost': totalCost,
-                        'orderID': '<? echo $orderID ?>',
+                        'orderID': '<?php echo $orderID ?>',
                     },
                     dataType: 'json',
                     success: function (data)
@@ -161,12 +161,12 @@ $orderID = $_POST['orderID'];
         </style>
     </head>
 
-    <? include_once 'header.php' ?>
+    <?php include_once 'header.php' ?>
     <body>
 
         <div id="mainContentHolder">
             <form method="POST" >
-                <div><h2>Your Order ID is: <? echo $orderID ?></h2> </div>
+                <div><h2>Your Order ID is: <?php echo $orderID ?></h2> </div>
                 <div class="form-group">
                     <label class="inputLabels" for="productSearch">Product</label> <br>
                     <input type="text" autocomplete="off" onkeyup="searchUpdate()" class="form-control" id="productSearch" placeholder="Search For Product">
