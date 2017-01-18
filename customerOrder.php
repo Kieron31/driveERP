@@ -5,6 +5,7 @@ $customerEmail = $_POST['customerEmail'];
 $customerTele = $_POST['custTeleNum'];
 $currency = $_POST['currency'];
 $orderID = $_POST['orderID'];
+$customerName = $_POST['customerSearch'];
 ?>
 <html>
     <head>
@@ -23,7 +24,6 @@ $orderID = $_POST['orderID'];
         <script>
             var productIDG = "";
             var prodCost = "";
-
             $(document).ready(function () {
                 $('#orderCompleteDlg').dialog({
                     resizable: false,
@@ -39,6 +39,7 @@ $orderID = $_POST['orderID'];
                 })
             });
             addOther();
+            
 
             function searchUpdate() {
                 var productSearch = $('#productSearch').val();
@@ -75,6 +76,7 @@ $orderID = $_POST['orderID'];
 
                 });
             }
+            productVName = "";
             function completeCustomer(productName, productID) { //when the user clicks a name in the suggested products it will auto fill the input box
                 $('#productSearch').val(productName);
                 $('#searchResults').html("");
@@ -95,6 +97,8 @@ $orderID = $_POST['orderID'];
                         var cost = data.costResults;
                         prodCost = cost;
                         $('#productCost').val(cost);
+                        productVName = data.nameResults;
+                        
                     },
                     error: function (data) {
                         alert('error in calling ajax page');
@@ -103,11 +107,8 @@ $orderID = $_POST['orderID'];
                 });
             }
             function updateCost() {
-                var quantity = document.getElementById('quantity').value;
                 var cost = prodCost;
-                var crateCost = (cost * 24)
-                var totalCost = (quantity * crateCost);
-                $('#productCost').val(totalCost);
+                $('#productCost').val(cost);
 
             }
             function customerOrder() {
@@ -150,15 +151,19 @@ $orderID = $_POST['orderID'];
                     dataType: 'json',
                     success: function (data)
                     {
-                        orderData = orderData + "<table>";
+                        var orderValue = 0;
+                        orderData = orderData + "<table style='margin: auto;'> <tr> <td class='tableData'> Email </td> <td class='tableData'> Product </td> <td class='tableData'> Quantity </td> <td class='tableData'> Cost </td> </tr>";
                         for (i = 0; i < data.orderResults.length; i++) { //creates a table with the suggested products
-                            orderData = orderData + "<tr> <td class='tableData'>" + data.orderResults[i].OrderID + "</td> <td class='tableData'>" + data.orderResults[i].CustomerID + "</td> <td class='tableData'>" + data.orderResults[i].email + "</td> <td class='tableData'>" + data.orderResults[i].dueDate + "</td> <td class='tableData'>" + data.orderResults[i].telNo + "</td> <td class='tableData'>" + data.orderResults[i].currency + "</td> <td class='tableData'>" + data.orderResults[i].quantity + "</td> <td class='tableData'>" + data.orderResults[i].ProductID + "</td> <td class='tableData'>" + data.orderResults[i].price + "</td> </tr>";
-
+                            orderData = orderData + "<tr> <td class='tableData'>" + data.orderResults[i].email + "</td> <td class='tableData'>" + data.orderResults[i].ProductDescShort + "</td> <td class='tableData'>" + data.orderResults[i].quantity + "</td> <td class='tableData'>" + data.orderResults[i].itemValue + "</td> </tr>";
+                            orderValue = orderValue + Number(data.orderResults[i].itemValue);
 
                         }
                         orderData = orderData + "</table>";
                         $('#productTable').html(orderData);
                         $('#orderCompleteDlg').dialog('close');
+                        //alert(orderValue)
+                        $('#totalValue').html(Math.round(orderValue*100)/100);
+                        
                     },
                     error: function (data) {
                         alert('error in calling ajax page');
@@ -167,6 +172,9 @@ $orderID = $_POST['orderID'];
 
                 });
             }
+            var customerName = "";
+           
+            
 
         </script>
         <style>
@@ -205,6 +213,7 @@ $orderID = $_POST['orderID'];
             }
             .tableData{
                 padding: 10px;
+                text-align: center;
             }
         </style>
     </head>
@@ -222,16 +231,21 @@ $orderID = $_POST['orderID'];
                 <div id="searchResults">
 
                 </div> <br>
-                <label class="inputLabels" for="quantity">Quantity (Crates of 24 Cans)</label><br>
+                <label class="inputLabels" for="quantity">Quantity (Single Cans)</label><br>
                 <input onchange="updateCost()" autocomplete="off" type="number" class="form-control" id="quantity">
                 <div class="form-group">
-                    <label class="inputLabels" for="productCost">Total Cost</label> <br>
-                    <input type="number" disabled="yes" class="form-control" id="productCost" placeholder="Total Price">
+                    <input type="hidden" disabled="yes" class="form-control" id="productCost">
                 </div>
                 <button type="button" onclick="customerOrder()" class="btn btn-primary">Add Product</button>
             </form>
+            <h2>Current Order for Store: <? echo $customerName ?> </h2>
             <div id="productTable">
-
+                <div id="totalValue">
+                
+            </div>
+            </div>
+            <div id="totalValue">
+                
             </div>
             <div id="orderCompleteDlg">
                 <h2>Product has been submitted </h2>

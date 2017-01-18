@@ -20,6 +20,7 @@ $quantity = $_POST['quantity'];
 $totalCost = $_POST['totalCost'];
 $orderID = $_POST['orderID'];
 $itemID = $_POST['itemID'];
+$customerID2 = $_POST['customerID'];
 
 $request = $_POST['request'];
 
@@ -85,12 +86,13 @@ if ($request == "prodSearchUpdate") {
 if ($request == "productCost") {
     if ($sqlconn != null) {
         try {
-            $sqlQuery = "SELECT Cost FROM Products WHERE ProductID = $ProductID  ";
+            $sqlQuery = "SELECT * FROM Products WHERE ProductID = $ProductID  ";
             $result = $sqlconn->prepare($sqlQuery);
             $result->execute();
             $rs = $result->fetchAll();
             foreach ($rs as $dataset){
             $jsonVal->costResults = $dataset['Cost'];
+            $jsonVal->nameResults = $dataset['ProductDescShort'];
             }
             //print_r($rs);
             //print_r($result->rowCount());  
@@ -102,6 +104,7 @@ if ($request == "productCost") {
     $jsonVal->errMsg = $errMsg;
 }
 if ($request == "addOrder") {
+    //Inserting order details into table
     if ($sqlconn != null) {
         try {
             $sqlQuery = "INSERT INTO OrderItems(OrderID , ProductID, quantity, price) VALUES ($orderID ,$ProductID, $quantity, $totalCost) ";
@@ -118,12 +121,14 @@ if ($request == "addOrder") {
     $jsonVal->errMsg = $errMsg;
 }
 if ($request == "drawTable") {
+    //joins and selects customer table and product table
     if ($sqlconn != null) {
         try {
-            $sqlQuery = "SELECT        OrderHeader.OrderID, OrderHeader.CustomerID, OrderHeader.email, OrderHeader.dueDate, OrderHeader.telNo, OrderHeader.currency, OrderItems.ItemID, OrderItems.quantity, OrderItems.ProductID, 
-                         OrderItems.price
+            $sqlQuery = "SELECT        OrderHeader.OrderID, OrderHeader.dueDate, OrderHeader.email, OrderItems.quantity, OrderItems.price, Products.ProductCode, Products.ProductDescShort, OrderItems.quantity * OrderItems.price as itemValue
 FROM            OrderHeader INNER JOIN
-                         OrderItems ON OrderHeader.OrderID = OrderItems.OrderID WHERE OrderItems.OrderID = $orderID ";
+                         OrderItems ON OrderHeader.OrderID = OrderItems.OrderID INNER JOIN
+                         Products ON OrderItems.ProductID = Products.ProductID 
+ WHERE OrderItems.OrderID = $orderID ";
             $result = $sqlconn->prepare($sqlQuery);
             $result->execute();
             $rs = $result->fetchAll();
@@ -139,6 +144,23 @@ FROM            OrderHeader INNER JOIN
     }
     $jsonVal->errMsg = $errMsg;
 }
-
+if ($request == "getCustomer") {
+    if ($sqlconn != null) {
+        try {
+            $sqlQuery = "SELECT CustomerName FROM Customers WHERE CustomerID = $customerID2 ";
+            $result = $sqlconn->prepare($sqlQuery);
+            $result->execute();
+            $rs = $result->fetchAll();
+            
+            $jsonVal->customer = $rs;
+            print_r($rs);
+            //print_r($result->rowCount());  
+        } catch (PDOException $e) {
+            $errFlg = 1;
+            $errMsg = $e->getMessage();
+        }
+    }
+    $jsonVal->errMsg = $errMsg;
+}
 echo json_encode($jsonVal);
 ?>
