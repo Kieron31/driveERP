@@ -1,4 +1,4 @@
-<?php
+<?
 $sqlconn = null;
 include_once 'config.php';
 $sqlconn = connectToDatabase();             ///connect to database
@@ -232,7 +232,7 @@ if (trim($ProductID) != "") {
             
     </head>
     <body>
-<?php
+<?
 include_once 'header.php';
 if ($errFlag == 1) {
     echo $errMsg;

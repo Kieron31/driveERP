@@ -1,4 +1,4 @@
-<?php
+<?
 
 $errFlg = 0;
 $errMsg = " ";

@@ -137,7 +137,7 @@
         </style>
     </head>
     <body>
-        <?php include_once 'header.php' ?>
+        <? include_once 'header.php' ?>
 
         <div id="mainContentHolder">
             <form name="frmCustomer" action="customerOrder.php" method="POST" >

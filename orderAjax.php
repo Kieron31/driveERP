@@ -107,7 +107,28 @@ if ($request == "addOrder") {
             $sqlQuery = "INSERT INTO OrderItems(OrderID , ProductID, quantity, price) VALUES ($orderID ,$ProductID, $quantity, $totalCost) ";
             $result = $sqlconn->prepare($sqlQuery);
             $result->execute();
-            //$rs = $result->fetchAll();
+            
+            print_r($rs);
+            //print_r($result->rowCount());  
+        } catch (PDOException $e) {
+            $errFlg = 1;
+            $errMsg = $e->getMessage();
+        }
+    }
+    $jsonVal->errMsg = $errMsg;
+}
+if ($request == "drawTable") {
+    if ($sqlconn != null) {
+        try {
+            $sqlQuery = "SELECT        OrderHeader.OrderID, OrderHeader.CustomerID, OrderHeader.email, OrderHeader.dueDate, OrderHeader.telNo, OrderHeader.currency, OrderItems.ItemID, OrderItems.quantity, OrderItems.ProductID, 
+                         OrderItems.price
+FROM            OrderHeader INNER JOIN
+                         OrderItems ON OrderHeader.OrderID = OrderItems.OrderID WHERE OrderItems.OrderID = $orderID ";
+            $result = $sqlconn->prepare($sqlQuery);
+            $result->execute();
+            $rs = $result->fetchAll();
+            
+            $jsonVal->orderResults = $rs;
             
             //print_r($rs);
             //print_r($result->rowCount());  
@@ -118,5 +139,6 @@ if ($request == "addOrder") {
     }
     $jsonVal->errMsg = $errMsg;
 }
+
 echo json_encode($jsonVal);
 ?>

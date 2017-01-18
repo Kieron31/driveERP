@@ -1,4 +1,4 @@
-<?php
+<?
 $sqlconn = null;
 include_once 'config.php';
 $sqlconn = connectToDatabase();
@@ -159,7 +159,7 @@ $sqlconn = connectToDatabase();
             </form>
 
         </div>
-        <?php
+        <?
         include_once 'footer.php';
         ?>
     </body>
