@@ -24,6 +24,11 @@ $customerName = $_POST['customerSearch'];
         <script>
             var productIDG = "";
             var prodCost = "";
+            var orderID = '<? echo $orderID ?>';
+            if (orderID == '') {
+                alert('Invalid Order ID, Return to new order page');
+                document.location.href = 'newOrder.php';
+            }
             $(document).ready(function () {
                 $('#orderCompleteDlg').dialog({
                     resizable: false,
@@ -39,7 +44,8 @@ $customerName = $_POST['customerSearch'];
                 })
             });
             addOther();
-            
+
+
 
             function searchUpdate() {
                 var productSearch = $('#productSearch').val();
@@ -96,9 +102,9 @@ $customerName = $_POST['customerSearch'];
                     {
                         var cost = data.costResults;
                         prodCost = cost;
-                        $('#productCost').val(cost);
+                        $('#costPerCan').val(cost);
                         productVName = data.nameResults;
-                        
+
                     },
                     error: function (data) {
                         alert('error in calling ajax page');
@@ -107,13 +113,18 @@ $customerName = $_POST['customerSearch'];
                 });
             }
             function updateCost() {
-                var cost = prodCost;
-                $('#productCost').val(cost);
+                var totalValue = 0;
+                
+                var quantity = $('#quantity').val();
+                var cost = $('#costPerCan').val();
+                totalValue = (cost * quantity);
+                $('#costForQuantity').val(totalValue);
+                
 
             }
             function customerOrder() {
                 var quantity = $('#quantity').val();
-                var totalCost = $('#productCost').val();
+                var totalCost = $('#costPerCan').val();
 
                 $.ajax({//
                     url: 'orderAjax.php',
@@ -152,9 +163,9 @@ $customerName = $_POST['customerSearch'];
                     success: function (data)
                     {
                         var orderValue = 0;
-                        orderData = orderData + "<table style='margin: auto;'> <tr> <td class='tableData'> Email </td> <td class='tableData'> Product </td> <td class='tableData'> Quantity </td> <td class='tableData'> Cost </td> </tr>";
+                        orderData = orderData + "<table style='margin: auto;'> <tr> <td class='tableData'> Email </td> <td class='tableData'> Product </td> <td class='tableData'> Quantity </td> <td class='tableData'> Item Cost </td> <td class='tableData'> Total Value </td> </tr>";
                         for (i = 0; i < data.orderResults.length; i++) { //creates a table with the suggested products
-                            orderData = orderData + "<tr> <td class='tableData'>" + data.orderResults[i].email + "</td> <td class='tableData'>" + data.orderResults[i].ProductDescShort + "</td> <td class='tableData'>" + data.orderResults[i].quantity + "</td> <td class='tableData'>" + data.orderResults[i].itemValue + "</td> </tr>";
+                            orderData = orderData + "<tr> <td class='tableData'>" + data.orderResults[i].email + "</td> <td class='tableData'>" + data.orderResults[i].ProductDescShort + "</td> <td class='tableData'>" + data.orderResults[i].quantity + "</td> <td class='tableData'>" + data.orderResults[i].price + "</td> <td class='tableData'>" + data.orderResults[i].itemValue + "</td> </tr>";
                             orderValue = orderValue + Number(data.orderResults[i].itemValue);
 
                         }
@@ -162,8 +173,13 @@ $customerName = $_POST['customerSearch'];
                         $('#productTable').html(orderData);
                         $('#orderCompleteDlg').dialog('close');
                         //alert(orderValue)
-                        $('#totalValue').html(Math.round(orderValue*100)/100);
-                        
+                        $('#totalValue').html('Grand Total: ' + (Math.round(orderValue * 100) / 100));
+                        $('#productSearch').val('');
+                        $('#quantity').val(0);
+                        $('#costPerCan').val(0);
+                        $('#costForQuantity').val(0);
+
+
                     },
                     error: function (data) {
                         alert('error in calling ajax page');
@@ -173,8 +189,8 @@ $customerName = $_POST['customerSearch'];
                 });
             }
             var customerName = "";
-           
-            
+
+
 
         </script>
         <style>
@@ -215,6 +231,19 @@ $customerName = $_POST['customerSearch'];
                 padding: 10px;
                 text-align: center;
             }
+            #totalValue{
+                text-align: center;
+                font-size: 1.3em;
+                width: 300px;
+                left: 56%;
+                position: relative;
+            }
+            #orderCompleteDlg{
+                text-align: center;
+            }
+            .costs{
+                width: 15% !important;
+            }
         </style>
     </head>
 
@@ -232,24 +261,23 @@ $customerName = $_POST['customerSearch'];
 
                 </div> <br>
                 <label class="inputLabels" for="quantity">Quantity (Single Cans)</label><br>
-                <input onchange="updateCost()" autocomplete="off" type="number" class="form-control" id="quantity">
+                <input onchange="updateCost()" autocomplete="off" value="0" type="number" class="form-control" min="0" id="quantity">
                 <div class="form-group">
-                    <input type="hidden" disabled="yes" class="form-control" id="productCost">
+                    <label class="inputLabels" for="costPerCan">Item Cost </label> <label class="inputLabels" for="costForQuantity"> Total Value</label> <br>
+                    <input type="number" disabled="yes" placeholder="0" class="form-control costs" id="costPerCan"> <input type="number" disabled="yes" class="form-control costs" id="costForQuantity">
                 </div>
                 <button type="button" onclick="customerOrder()" class="btn btn-primary">Add Product</button>
             </form>
             <h2>Current Order for Store: <? echo $customerName ?> </h2>
             <div id="productTable">
-                <div id="totalValue">
-                
-            </div>
+
             </div>
             <div id="totalValue">
-                
+
             </div>
             <div id="orderCompleteDlg">
-                <h2>Product has been submitted </h2>
-                <button type="button" onclick="addOther()">Add Another Product</button>
+                <h2>Product has been added to order </h2>
+                <button type="button" class="btn btn-primary" onclick="addOther()">Add Another Product</button>
             </div>
         </div>
 
