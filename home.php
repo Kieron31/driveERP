@@ -197,8 +197,6 @@ if ($sqlconn != null) {
         </div>
         <form action="productOriginal.php" method="POST" name="frmViewProduct">
             <input id="ProductID" name="ProductID" type="hidden">
-            
-            
         </form>
         <?
         include_once 'footer.php';

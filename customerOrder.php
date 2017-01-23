@@ -44,9 +44,6 @@ $customerName = $_POST['customerSearch'];
                 })
             });
             addOther();
-
-
-
             function searchUpdate() {
                 var productSearch = $('#productSearch').val();
                 var len = productSearch.length;
@@ -70,8 +67,6 @@ $customerName = $_POST['customerSearch'];
                         outputData = outputData + "<table>";
                         for (i = 0; i < data.prodResults.length; i++) { //creates a table with the suggested products
                             outputData = outputData + "<tr> <td onclick='completeCustomer(\"" + data.prodResults[i].ProductDescLong + "\" , \"" + data.prodResults[i].ProductID + "\")' >" + data.prodResults[i].ProductDescLong + "</td> </tr>";
-
-
                         }
                         outputData = outputData + "</table>";
                         $('#searchResults').html(outputData);
@@ -79,7 +74,6 @@ $customerName = $_POST['customerSearch'];
                     error: function (data) {
                         alert('error in calling ajax page');
                     }
-
                 });
             }
             productVName = "";
@@ -91,7 +85,6 @@ $customerName = $_POST['customerSearch'];
                 $.ajax({//call an ajax to update the cost of the product in the total cost field
                     url: 'orderAjax.php',
                     cache: false,
-
                     type: 'POST',
                     data: {
                         'request': 'productCost',
@@ -104,28 +97,22 @@ $customerName = $_POST['customerSearch'];
                         prodCost = cost;
                         $('#costPerCan').val(cost);
                         productVName = data.nameResults;
-
                     },
                     error: function (data) {
                         alert('error in calling ajax page');
                     }
-
                 });
             }
             function updateCost() {
                 var totalValue = 0;
-                
                 var quantity = $('#quantity').val();
                 var cost = $('#costPerCan').val();
                 totalValue = (cost * quantity);
                 $('#costForQuantity').val(totalValue);
-                
-
             }
             function customerOrder() {
                 var quantity = $('#quantity').val();
                 var totalCost = $('#costPerCan').val();
-
                 $.ajax({//
                     url: 'orderAjax.php',
                     cache: false,
@@ -141,12 +128,10 @@ $customerName = $_POST['customerSearch'];
                     success: function (data)
                     {
                         $('#orderCompleteDlg').dialog('open');
-
                     },
                     error: function (data) {
                         alert('error in calling ajax page');
                     }
-
                 });
             }
             function addOther() {
@@ -167,7 +152,6 @@ $customerName = $_POST['customerSearch'];
                         for (i = 0; i < data.orderResults.length; i++) { //creates a table with the suggested products
                             orderData = orderData + "<tr> <td class='tableData'>" + data.orderResults[i].email + "</td> <td class='tableData'>" + data.orderResults[i].ProductDescShort + "</td> <td class='tableData'>" + data.orderResults[i].quantity + "</td> <td class='tableData'>" + data.orderResults[i].price + "</td> <td class='tableData'>" + data.orderResults[i].itemValue + "</td> </tr>";
                             orderValue = orderValue + Number(data.orderResults[i].itemValue);
-
                         }
                         orderData = orderData + "</table>";
                         $('#productTable').html(orderData);
@@ -178,20 +162,17 @@ $customerName = $_POST['customerSearch'];
                         $('#quantity').val(0);
                         $('#costPerCan').val(0);
                         $('#costForQuantity').val(0);
-
-
                     },
                     error: function (data) {
                         alert('error in calling ajax page');
                         $('#orderCompleteDlg').dialog('close');
                     }
-
                 });
             }
             var customerName = "";
-
-
-
+            function completeOrder(){
+                document.forms['createPDF'].submit();
+            }
         </script>
         <style>
             #mainContentHolder{
@@ -246,19 +227,17 @@ $customerName = $_POST['customerSearch'];
             }
         </style>
     </head>
-
     <? include_once 'header.php' ?>
     <body>
-
         <div id="mainContentHolder">
-            <form method="POST" >
+            <form method="POST" action="orderPDF.php" name="createPDF">
                 <div><h2>Your Order ID is: <? echo $orderID ?></h2> </div>
+                <input type="hidden" name="orderID" value="<? echo $orderID ?>" >
                 <div class="form-group">
                     <label class="inputLabels" for="productSearch">Product</label> <br>
                     <input type="text" autocomplete="off" onkeyup="searchUpdate()" class="form-control" id="productSearch" placeholder="Search For Product">
                 </div>
                 <div id="searchResults">
-
                 </div> <br>
                 <label class="inputLabels" for="quantity">Quantity (Single Cans)</label><br>
                 <input onchange="updateCost()" autocomplete="off" value="0" type="number" class="form-control" min="0" id="quantity">
@@ -267,21 +246,17 @@ $customerName = $_POST['customerSearch'];
                     <input type="number" disabled="yes" placeholder="0" class="form-control costs" id="costPerCan"> <input type="number" disabled="yes" class="form-control costs" id="costForQuantity">
                 </div>
                 <button type="button" onclick="customerOrder()" class="btn btn-primary">Add Product</button>
-            </form>
+                <button type="button" onclick="completeOrder()" class="btn btn-primary">Complete Order</button>
             <h2>Current Order for Store: <? echo $customerName ?> </h2>
-            <div id="productTable">
-
+            <div name="productTable" id="productTable">
             </div>
             <div id="totalValue">
-
             </div>
+            </form>
             <div id="orderCompleteDlg">
                 <h2>Product has been added to order </h2>
                 <button type="button" class="btn btn-primary" onclick="addOther()">Add Another Product</button>
             </div>
         </div>
-
-
-
     </body>
 </html>
