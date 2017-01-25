@@ -1,9 +1,12 @@
 <?php
 
-$sqlconn = null;
-include_once 'config.php';
-$sqlconn = connectToDatabase();
-
+//$sqlconn = null;
+//include_once 'config.php';
+//$sqlconn = connectToDatabase();
+include_once ("connect.php");
+include_once ("class_orders.php");
+$sqlclass = new connect();
+$sqlconn = $sqlclass->sqlConnection();
 $errFlg = 0;
 $errMsg = " ";
 
@@ -90,9 +93,9 @@ if ($request == "productCost") {
             $result = $sqlconn->prepare($sqlQuery);
             $result->execute();
             $rs = $result->fetchAll();
-            foreach ($rs as $dataset){
-            $jsonVal->costResults = $dataset['Cost'];
-            $jsonVal->nameResults = $dataset['ProductDescShort'];
+            foreach ($rs as $dataset) {
+                $jsonVal->costResults = $dataset['Cost'];
+                $jsonVal->nameResults = $dataset['ProductDescShort'];
             }
             //print_r($rs);
             //print_r($result->rowCount());  
@@ -110,7 +113,7 @@ if ($request == "addOrder") {
             $sqlQuery = "INSERT INTO OrderItems(OrderID , ProductID, quantity, price) VALUES ($orderID ,$ProductID, $quantity, $totalCost) ";
             $result = $sqlconn->prepare($sqlQuery);
             $result->execute();
-            
+
             print_r($rs);
             //print_r($result->rowCount());  
         } catch (PDOException $e) {
@@ -122,26 +125,20 @@ if ($request == "addOrder") {
 }
 if ($request == "drawTable") {
     //joins and selects customer table and product table
-    if ($sqlconn != null) {
-        try {
-            $sqlQuery = "SELECT        OrderHeader.OrderID, OrderHeader.dueDate, OrderHeader.email, OrderItems.quantity, OrderItems.price, Products.ProductCode, Products.ProductDescShort, OrderItems.quantity * OrderItems.price as itemValue
-FROM            OrderHeader INNER JOIN
-                         OrderItems ON OrderHeader.OrderID = OrderItems.OrderID INNER JOIN
-                         Products ON OrderItems.ProductID = Products.ProductID 
- WHERE OrderItems.OrderID = $orderID ";
-            $result = $sqlconn->prepare($sqlQuery);
-            $result->execute();
-            $rs = $result->fetchAll();
-            
-            $jsonVal->orderResults = $rs;
-            
-            //print_r($rs);
-            //print_r($result->rowCount());  
-        } catch (PDOException $e) {
-            $errFlg = 1;
-            $errMsg = $e->getMessage();
-        }
-    }
+
+    $errMsg = "";
+    
+    $resultClass = new orders();
+    $result = $resultClass->getOrderItems($orderID);
+    $rs = $result->fetchAll();
+    $jsonVal->orderResults = $rs;
+    
+    $headerClass = new headers();
+    $result = $headerClass->getOrderHeaders($orderID);
+    
+    $jsonVal->headerResults = $rs;
+    
+    
     $jsonVal->errMsg = $errMsg;
 }
 if ($request == "getCustomer") {
@@ -151,7 +148,7 @@ if ($request == "getCustomer") {
             $result = $sqlconn->prepare($sqlQuery);
             $result->execute();
             $rs = $result->fetchAll();
-            
+
             $jsonVal->customer = $rs;
             print_r($rs);
             //print_r($result->rowCount());  

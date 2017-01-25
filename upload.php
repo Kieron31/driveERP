@@ -3,9 +3,9 @@
 $errFlg = 0;
 $errMsg = " ";
 $ProductID = $_POST['ProductID'];
-$sqlconn = null;
-include_once 'config.php';
-$sqlconn = connectToDatabase();
+include ("connect.php");
+$sqlclass = new connect();
+$sqlconn = $sqlclass->sqlConnection();
 
 $target_dir = 'uploads/';
 $target_fileName = $target_dir . basename($_FILES['productImage']['name']);

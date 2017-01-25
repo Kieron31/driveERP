@@ -5,9 +5,9 @@ To change this template file, choose Tools | Templates
 and open the template in the editor.
 -->
 <?
-$sqlconn = null;
-include_once 'config.php';
-$sqlconn = connectToDatabase();
+include ("connect.php");
+$sqlclass = new connect();
+$sqlconn = $sqlclass->sqlConnection();
 
 if ($sqlconn != null) {
     try {

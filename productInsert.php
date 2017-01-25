@@ -13,9 +13,9 @@ $RRP = $_POST['RRP'];
 $Weight = $_POST['Weight'];
 
 
-$sqlconn = null;
-include_once 'config.php';
-$sqlconn = connectToDatabase();
+include ("connect.php");
+$sqlclass = new connect();
+$sqlconn = $sqlclass->sqlConnection();
 if ($request == 'addProduct') {
     if ($sqlconn != null) {
         try {

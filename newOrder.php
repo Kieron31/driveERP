@@ -102,6 +102,10 @@
             #mainContentHolder{
                 background-color: lightgray;
                 text-align: center;
+                width: 70%;
+                height: 100%;
+                margin: auto;
+                padding: 20px;
             }
             .form-control{
                 text-align: center;
@@ -150,7 +154,7 @@
                 <input autocomplete="off" type="text" name="dueDate" id="dueDate" size="30">
                 <div class="form-group">
                     <label class="inputLabels" for="inputEmail">Email address</label> <br>
-                    <input type="email" class="form-control" name="inputEmail" id="inputEmail" placeholder="Enter email">
+                    <input type="email" class="form-control" autocomplete="off" name="inputEmail" id="inputEmail" placeholder="Enter email">
                 </div>
                 <div class="form-group">
                     <label class="inputLabels" for="telephoneInput">Telephone Number</label> <br>

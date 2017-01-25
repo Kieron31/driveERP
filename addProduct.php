@@ -1,7 +1,7 @@
 <?
-$sqlconn = null;
-include_once 'config.php';
-$sqlconn = connectToDatabase();
+include ("connect.php");
+$sqlclass = new connect();
+$sqlconn = $sqlclass->sqlConnection();
 
 ?>
 <!DOCTYPE html>

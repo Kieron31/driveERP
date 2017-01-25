@@ -1,7 +1,7 @@
 <?
-$sqlconn = null;
-include_once 'config.php';
-$sqlconn = connectToDatabase();             ///connect to database
+include ("connect.php");
+$sqlclass = new connect();
+$sqlconn = $sqlclass->sqlConnection();          ///connect to database
 $ProductID = $_POST['ProductID'];
 if (trim($ProductID) != "") {
     //Produc code has been posted 

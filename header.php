@@ -39,6 +39,9 @@
                         <a href="newOrder.php" class="nav-link">New Order</a>
                     </li>
                     <li class="nav-item">
+                        <a href="amendOrder.php" class="nav-link">Amend Order</a>
+                    </li>
+                    <li class="nav-item">
                         <a class="nav-link">Contact</a>
                     </li>
                     <li class="nav-item">

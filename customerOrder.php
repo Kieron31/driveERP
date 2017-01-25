@@ -1,8 +1,8 @@
 <?php
 $customerID = $_POST['customerID'];
 $dueDate = $_POST['dueDate'];
-$customerEmail = $_POST['customerEmail'];
-$customerTele = $_POST['custTeleNum'];
+$customerEmail = $_POST['inputEmail'];
+$customerTele = $_POST['telephoneInput'];
 $currency = $_POST['currency'];
 $orderID = $_POST['orderID'];
 $customerName = $_POST['customerSearch'];
@@ -150,14 +150,14 @@ $customerName = $_POST['customerSearch'];
                         var orderValue = 0;
                         orderData = orderData + "<table style='margin: auto;'> <tr> <td class='tableData'> Email </td> <td class='tableData'> Product </td> <td class='tableData'> Quantity </td> <td class='tableData'> Item Cost </td> <td class='tableData'> Total Value </td> </tr>";
                         for (i = 0; i < data.orderResults.length; i++) { //creates a table with the suggested products
-                            orderData = orderData + "<tr> <td class='tableData'>" + data.orderResults[i].email + "</td> <td class='tableData'>" + data.orderResults[i].ProductDescShort + "</td> <td class='tableData'>" + data.orderResults[i].quantity + "</td> <td class='tableData'>" + data.orderResults[i].price + "</td> <td class='tableData'>" + data.orderResults[i].itemValue + "</td> </tr>";
+                            orderData = orderData + "<tr> <td class='tableData'>" + data.orderResults[i].email + "</td> <td class='tableData'>" + data.orderResults[i].ProductDescShort + "</td> <td class='tableData'>" + data.orderResults[i].quantity + "</td> <td class='tableData'>" + parseFloat(Math.round(data.orderResults[i].price * 100) / 100).toFixed(2)+ "</td> <td class='tableData'>" + parseFloat(Math.round(data.orderResults[i].itemValue * 100) / 100).toFixed(2) + "</td> </tr>";
                             orderValue = orderValue + Number(data.orderResults[i].itemValue);
                         }
                         orderData = orderData + "</table>";
                         $('#productTable').html(orderData);
                         $('#orderCompleteDlg').dialog('close');
                         //alert(orderValue)
-                        $('#totalValue').html('Grand Total: ' + (Math.round(orderValue * 100) / 100));
+                        $('#totalValue').html('Grand Total: ' + parseFloat(Math.round(orderValue * 100) / 100).toFixed(2));
                         $('#productSearch').val('');
                         $('#quantity').val(0);
                         $('#costPerCan').val(0);
@@ -178,6 +178,10 @@ $customerName = $_POST['customerSearch'];
             #mainContentHolder{
                 background-color: lightgray;
                 text-align: center;
+                width: 70%;
+                height: 100%;
+                margin: auto;
+                padding: 20px;
             }
             .form-control{
                 text-align: center;
@@ -232,7 +236,13 @@ $customerName = $_POST['customerSearch'];
         <div id="mainContentHolder">
             <form method="POST" action="orderPDF.php" name="createPDF">
                 <div><h2>Your Order ID is: <? echo $orderID ?></h2> </div>
+                
                 <input type="hidden" name="orderID" value="<? echo $orderID ?>" >
+                <input type="hidden" name="email" value="<? echo $customerEmail?>" >
+                <input type="hidden" name="custName" value="<? echo $customerName?>" >
+                <input type="hidden" name="dueDate" value="<? echo $dueDate?>" >
+                <input type="hidden" name="custTele" value="<? echo $customerTele?>" >
+                
                 <div class="form-group">
                     <label class="inputLabels" for="productSearch">Product</label> <br>
                     <input type="text" autocomplete="off" onkeyup="searchUpdate()" class="form-control" id="productSearch" placeholder="Search For Product">

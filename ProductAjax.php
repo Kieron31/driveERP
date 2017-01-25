@@ -17,9 +17,12 @@ $ProductCat = $_POST['ProductCat'];
 $Weight = $_POST['Weight'];
 $prodImg = $_POST['prodImg'];
 
-$sqlconn = null;
-include_once 'config.php';
-$sqlconn = connectToDatabase();
+//$sqlconn = null;
+//include_once 'config.php';
+//$sqlconn = connectToDatabase();
+include ("connect.php");
+$sqlclass = new connect();
+$sqlconn = $sqlclass->sqlConnection();
 
 if ($request == "getProduct") {
     if ($sqlconn != null) {
